@@ -1,4 +1,5 @@
 # TONCENTER API SDK
+[![NPM](https://nodei.co/npm/toncenter-api-sdk.png?mini=true)](https://npmjs.org/package/toncenter-api-sdk)
 
 ## Current Status
 - V3 ✅
@@ -9,6 +10,7 @@
 - V2 run section ⚠️- responses aren't parsed
 - V2 send section ⚠️ - responses aren't parsed
 - V2 json rpc section ⚠️ - responses aren't parsed
+- Rate limit handling 🚫
 
 ## Introduction
 
@@ -82,32 +84,32 @@ example();
 
 The SDK provides methods corresponding to all endpoints of the TONCENTER API. Here's a brief overview of the main categories:
 
-### Accounts
+### Accounts V3
 - `getAccountStates(addresses: string[], includeBoc: boolean = true)`
 - `getAddressBook(addresses: string[])`
 - `getWalletStates(addresses: string[])`
 
-### Events
+### Events V3
 - `getActions(actionIds?: string[], traceIds?: string[])`
 - `getEvents(params: EventParams)`
 
-### Blockchain
+### Blockchain V3
 - `getBlocks(params: BlockParams)`
 - `getTransactions(params: TransactionParams)`
 - `getMessages(params: MessageParams)`
 - `getMasterchainInfo()`
 
-### Jettons
+### Jettons V3
 - `getJettonBurns(params: JettonBurnParams)`
 - `getJettonMasters(params: JettonMasterParams)`
 - `getJettonTransfers(params: JettonTransferParams)`
 
-### NFTs
+### NFTs V3
 - `getNftCollections(params: NftCollectionParams)`
 - `getNftItems(params: NftItemParams)`
 - `getNftTransfers(params: NftTransferParams)`
 
-### Stats
+### Stats V3
 - `getTopAccountsByBalance(limit?: number, offset?: number)`
 
 For detailed information on each method and its parameters, please refer to the TypeScript definitions in the source code.
@@ -169,7 +171,7 @@ Contributions to the TONCENTER API SDK are welcome! Please follow these steps to
 4. Push your changes to your fork
 5. Create a pull request to the main repository
 
-Please ensure that your code follows the existing style and includes appropriate tests and documentation.
+Please ensure that your code follows the existing style.
 
 ## License
 
