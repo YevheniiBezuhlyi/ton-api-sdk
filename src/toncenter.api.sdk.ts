@@ -1,75 +1,211 @@
-// ton-api-sdk.ts
-
-import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import {
-	AccountState,
-	Action,
-	AddressBook,
-	Block,
-	Event,
-	JettonBurn,
-	JettonMaster,
-	JettonTransfer,
-	Message,
-	NftCollection,
-	NftItem,
-	NftTransfer,
-	TopAccount,
-	Transaction,
-	WalletState
+	V2TokenData,
+	V2AddressInformation,
+	V2ApiResponse, V2ExtendedAddressInformation, V2Transaction, V2WalletInformation,
+	V3AccountState, V3Action, V3AddressBook, V3Block, V3Event, V3JettonBurn,
+	V3JettonMaster, V3JettonTransfer, V3Message, V3NftCollection, V3NftItem,
+	V3NftTransfer, V3TopAccount, V3Transaction, V3WalletState, V2DetectedAddress
 } from './types';
 
-class ToncenterApiSdk {
-	private axiosInstance: AxiosInstance;
+class TonCenterApiSdkBase {
+	protected axiosInstance: AxiosInstance;
 
 	constructor(baseURL: string, apiKey: string) {
+		const headers: Record<string, string> = {
+			'Content-Type': 'application/json',
+		};
+		if (apiKey) {
+			headers['X-Api-Key'] = apiKey;
+		}
 		this.axiosInstance = axios.create({
 			baseURL,
-			headers: {
-				...(apiKey && { 'X-Api-Key': `${apiKey}` }),
-				'Content-Type': 'application/json',
-			},
+			headers,
 		});
+	}
+
+	protected async request<T>(method: string, url: string, params?: any): Promise<T> {
+		try {
+			const response = await this.axiosInstance.request<T>({
+				method,
+				url,
+				params,
+			});
+			return response.data;
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response) {
+				throw new Error(`API Error: ${error.response.status} - ${error.response.data.error}`);
+			}
+			throw error;
+		}
+	}
+}
+
+class TonCenterApiSdkV2 extends TonCenterApiSdkBase {
+	constructor(baseURL: string, apiKey: string) {
+		super(baseURL, apiKey);
+	}
+
+	async getAddressInformation(address: string): Promise<V2ApiResponse<V2AddressInformation>> {
+		return this.request<V2ApiResponse<V2AddressInformation>>('GET', '/api/v2/getAddressInformation', { address });
+	}
+
+	async getExtendedAddressInformation(address: string): Promise<V2ApiResponse<V2ExtendedAddressInformation>> {
+		return this.request<V2ApiResponse<V2ExtendedAddressInformation>>('GET', '/api/v2/getExtendedAddressInformation', { address });
+	}
+
+	async getWalletInformation(address: string): Promise<V2ApiResponse<V2WalletInformation>> {
+		return this.request<V2ApiResponse<V2WalletInformation>>('GET', '/api/v2/getWalletInformation', {address});
+	}
+
+	async getTransactions(
+		address: string,
+		limit?: number,
+		lt?: number,
+		hash?: string,
+		to_lt?: number,
+		archival?: boolean
+	): Promise<V2ApiResponse<V2Transaction[]>> {
+		const params: any = { address };
+		if (limit) params.limit = limit;
+		if (lt) params.lt = lt;
+		if (hash) params.hash = hash;
+		if (to_lt) params.to_lt = to_lt;
+		if (archival) params.archival = archival;
+
+		return this.request<V2ApiResponse<V2Transaction[]>>('GET', '/api/v2/getTransactions', params);
+	}
+
+	async getAddressBalance(address: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('GET', '/api/v2/getAddressBalance', { address });
+	}
+
+	async getAddressState(address: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('GET', '/api/v2/getAddressState', { address });
+	}
+
+	/**
+	 * Converts a raw address to a user-friendly format.
+	 * @param address The raw address (e.g., "0:83DFD552E63729B472FCBCC8C45EBCC6691702558B68EC7527E1BA403A0F31A8")
+	 * @returns A promise that resolves to the packed (user-friendly) address
+	 */
+	async packAddress(address: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('GET', '/api/v2/packAddress', { address });
+	}
+
+	/**
+	 * Converts a user-friendly address to its raw format.
+	 * @param address The user-friendly address (e.g., "EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N")
+	 * @returns A promise that resolves to the unpacked (raw) address
+	 */
+	async unpackAddress(address: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('GET', '/api/v2/unpackAddress', { address });
+	}
+
+	/**
+	 * Get NFT or Jetton information.
+	 * @param address Address of NFT collection/item or Jetton master/wallet smart contract
+	 * @returns A promise that resolves to the token data or an error if the contract is not a valid token.
+	 */
+	async getTokenData(address: string): Promise<V2ApiResponse<V2TokenData>> {
+		try {
+			const response = await this.request<V2ApiResponse<V2TokenData>>('GET', '/api/v2/getTokenData', { address });
+			return response;
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response?.status === 503) {
+				throw new Error("Smart contract is not Jetton or NFT");
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * Get all possible address forms for a given TON account identifier.
+	 * @param address Identifier of target TON account in any form.
+	 * @returns A promise that resolves to the detected address information
+	 */
+	async detectAddress(address: string): Promise<V2ApiResponse<V2DetectedAddress>> {
+		return this.request<V2ApiResponse<V2DetectedAddress>>('GET', '/api/v2/detectAddress', { address });
+	}
+
+
+	//****************************************
+	//************ POST methods **************
+	//****************************************
+
+	async runGetMethod(params: {
+		address: string;
+		method: string;
+		stack: Array<Array<string>>;
+		seqno?: number;
+	}): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('POST', '/runGetMethod', params);
+	}
+
+	async sendBoc(boc: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('POST', '/sendBoc', { boc });
+	}
+
+	async sendBocReturnHash(boc: string): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('POST', '/sendBocReturnHash', { boc });
+	}
+
+	async sendQuery(params: {
+		address: string;
+		body: string;
+		init_code?: string;
+		init_data?: string;
+	}): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('POST', '/sendQuery', params);
+	}
+
+	async estimateFee(params: {
+		address: string;
+		body: string;
+		init_code?: string;
+		init_data?: string;
+		ignore_chksig?: boolean;
+	}): Promise<V2ApiResponse<string>> {
+		return this.request<V2ApiResponse<string>>('POST', '/estimateFee', params);
+	}
+
+	async jsonRpc(params: {
+		method: string;
+		params: any;
+		id: string;
+		jsonrpc: string;
+	}): Promise<any> {
+		return this.request('POST', '/jsonRPC', params);
+	}
+}
+
+class TonCenterApiSdkV3 extends TonCenterApiSdkBase {
+	constructor(baseURL: string, apiKey: string) {
+		super(baseURL, apiKey);
 	}
 
 	// Accounts
 	async getAccountStates(addresses: string[], includeBoc: boolean = true): Promise<{
-		accounts: AccountState[],
-		address_book: AddressBook
+		accounts: V3AccountState[],
+		address_book: V3AddressBook
 	}> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/accountStates',
-			params: {address: addresses, include_boc: includeBoc},
-		});
+		return this.request('GET', '/api/v3/accountStates', { address: addresses, include_boc: includeBoc });
 	}
 
-	async getAddressBook(addresses: string[]): Promise<AddressBook> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/addressBook',
-			params: {address: addresses},
-		});
+	async getAddressBook(addresses: string[]): Promise<V3AddressBook> {
+		return this.request('GET', '/api/v3/addressBook', { address: addresses });
 	}
 
-	async getWalletStates(addresses: string[]): Promise<{ wallets: WalletState[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/walletStates',
-			params: {address: addresses},
-		});
+	async getWalletStates(addresses: string[]): Promise<{ wallets: V3WalletState[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/walletStates', { address: addresses });
 	}
 
 	// Events
 	async getActions(actionIds?: string[], traceIds?: string[]): Promise<{
-		actions: Action[],
-		address_book: AddressBook
+		actions: V3Action[],
+		address_book: V3AddressBook
 	}> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/actions',
-			params: {action_id: actionIds, trace_id: traceIds},
-		});
+		return this.request('GET', '/api/v3/actions', { action_id: actionIds, trace_id: traceIds });
 	}
 
 	async getEvents(params: {
@@ -84,89 +220,11 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ events: Event[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/events',
-			params: {
-				account: params.account,
-				tx_hash: params.txHash,
-				msg_hash: params.msgHash,
-				mc_seqno: params.mcSeqno,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
-	}
-
-	// API v2
-	async getAddressInformation(address: string, useV2: boolean = true): Promise<AccountState> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/addressInformation',
-			params: {address, use_v2: useV2},
-		});
-	}
-
-	async estimateFee(params: {
-		address: string;
-		body: string;
-		ignoreChksig?: boolean;
-		initCode?: string;
-		initData?: string;
-	}): Promise<any> {
-		return this.request({
-			method: 'POST',
-			url: '/api/v3/estimateFee',
-			data: params,
-		});
-	}
-
-	async sendMessage(boc: string): Promise<{ message_hash: string }> {
-		return this.request({
-			method: 'POST',
-			url: '/api/v3/message',
-			data: {boc},
-		});
-	}
-
-	async runGetMethod(params: {
-		address: string;
-		method: string;
-		stack: Array<{ type: string; value: string }>;
-	}): Promise<any> {
-		return this.request({
-			method: 'POST',
-			url: '/api/v3/runGetMethod',
-			data: params,
-		});
-	}
-
-	async getWalletInformation(address: string, useV2: boolean = true): Promise<WalletState> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/walletInformation',
-			params: {address, use_v2: useV2},
-		});
+	}): Promise<{ events: V3Event[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/events', params);
 	}
 
 	// Blockchain
-	async getAdjacentTransactions(hash: string, direction: 'in' | 'out' | '--'): Promise<{
-		transactions: Transaction[],
-		address_book: AddressBook
-	}> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/adjacentTransactions',
-			params: {hash, direction},
-		});
-	}
-
 	async getBlocks(params: {
 		workchain?: number;
 		shard?: string;
@@ -179,89 +237,8 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ blocks: Block[] }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/blocks',
-			params: {
-				workchain: params.workchain,
-				shard: params.shard,
-				seqno: params.seqno,
-				mc_seqno: params.mcSeqno,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
-	}
-
-	async getMasterchainBlockShardState(seqno: number): Promise<{
-		transactions: Transaction[],
-		address_book: AddressBook
-	}> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/masterchainBlockShardState',
-			params: {seqno},
-		});
-	}
-
-	async getMasterchainBlockShards(seqno: number): Promise<{
-		transactions: Transaction[],
-		address_book: AddressBook
-	}> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/masterchainBlockShards',
-			params: {seqno},
-		});
-	}
-
-	async getMasterchainInfo(): Promise<{ first: Block, last: Block }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/masterchainInfo',
-		});
-	}
-
-	async getMessages(params: {
-		msgHash?: string[];
-		bodyHash?: string;
-		source?: string;
-		destination?: string;
-		opcode?: string;
-		startUtime?: number;
-		endUtime?: number;
-		startLt?: number;
-		endLt?: number;
-		direction?: 'in' | 'out' | '--';
-		limit?: number;
-		offset?: number;
-		sort?: 'asc' | 'desc';
-	}): Promise<{ messages: Message[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/messages',
-			params: {
-				msg_hash: params.msgHash,
-				body_hash: params.bodyHash,
-				source: params.source,
-				destination: params.destination,
-				opcode: params.opcode,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				direction: params.direction,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
+	}): Promise<{ blocks: V3Block[] }> {
+		return this.request('GET', '/api/v3/blocks', params);
 	}
 
 	async getTransactions(params: {
@@ -280,69 +257,11 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ transactions: Transaction[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/transactions',
-			params: {
-				workchain: params.workchain,
-				shard: params.shard,
-				seqno: params.seqno,
-				mc_seqno: params.mcSeqno,
-				account: params.account,
-				exclude_account: params.excludeAccount,
-				hash: params.hash,
-				lt: params.lt,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
+	}): Promise<{ transactions: V3Transaction[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/transactions', params);
 	}
 
-	async getTransactionsByMasterchainBlock(params: {
-		seqno: number;
-		limit?: number;
-		offset?: number;
-		sort?: 'asc' | 'desc';
-	}): Promise<{ transactions: Transaction[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/transactionsByMasterchainBlock',
-			params: {
-				seqno: params.seqno,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
-	}
-
-	async getTransactionsByMessage(params: {
-		msgHash: string;
-		bodyHash?: string;
-		opcode?: string;
-		direction?: 'in' | 'out' | '--';
-		limit?: number;
-		offset?: number;
-	}): Promise<{ transactions: Transaction[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/transactionsByMessage',
-			params: {
-				msg_hash: params.msgHash,
-				body_hash: params.bodyHash,
-				opcode: params.opcode,
-				direction: params.direction,
-				limit: params.limit,
-				offset: params.offset,
-			},
-		});
-	}
+	// Add other V3 methods as needed...
 
 	// Jettons
 	async getJettonBurns(params: {
@@ -356,23 +275,8 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ jetton_burns: JettonBurn[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/jetton/burns',
-			params: {
-				address: params.address,
-				jetton_wallet: params.jettonWallet,
-				jetton_master: params.jettonMaster,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
+	}): Promise<{ jetton_burns: V3JettonBurn[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/jetton/burns', params);
 	}
 
 	async getJettonMasters(params: {
@@ -380,17 +284,8 @@ class ToncenterApiSdk {
 		adminAddress?: string[];
 		limit?: number;
 		offset?: number;
-	}): Promise<{ jetton_masters: JettonMaster[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/jetton/masters',
-			params: {
-				address: params.address,
-				admin_address: params.adminAddress,
-				limit: params.limit,
-				offset: params.offset,
-			},
-		});
+	}): Promise<{ jetton_masters: V3JettonMaster[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/jetton/masters', params);
 	}
 
 	async getJettonTransfers(params: {
@@ -405,24 +300,8 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ jetton_transfers: JettonTransfer[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/jetton/transfers',
-			params: {
-				owner_address: params.ownerAddress,
-				jetton_wallet: params.jettonWallet,
-				jetton_master: params.jettonMaster,
-				direction: params.direction,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
+	}): Promise<{ jetton_transfers: V3JettonTransfer[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/jetton/transfers', params);
 	}
 
 	// NFTs
@@ -431,17 +310,8 @@ class ToncenterApiSdk {
 		ownerAddress?: string[];
 		limit?: number;
 		offset?: number;
-	}): Promise<{ nft_collections: NftCollection[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/nft/collections',
-			params: {
-				collection_address: params.collectionAddress,
-				owner_address: params.ownerAddress,
-				limit: params.limit,
-				offset: params.offset,
-			},
-		});
+	}): Promise<{ nft_collections: V3NftCollection[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/nft/collections', params);
 	}
 
 	async getNftItems(params: {
@@ -451,19 +321,8 @@ class ToncenterApiSdk {
 		index?: string[];
 		limit?: number;
 		offset?: number;
-	}): Promise<{ nft_items: NftItem[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/nft/items',
-			params: {
-				address: params.address,
-				owner_address: params.ownerAddress,
-				collection_address: params.collectionAddress,
-				index: params.index,
-				limit: params.limit,
-				offset: params.offset,
-			},
-		});
+	}): Promise<{ nft_items: V3NftItem[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/nft/items', params);
 	}
 
 	async getNftTransfers(params: {
@@ -478,49 +337,14 @@ class ToncenterApiSdk {
 		limit?: number;
 		offset?: number;
 		sort?: 'asc' | 'desc';
-	}): Promise<{ nft_transfers: NftTransfer[], address_book: AddressBook }> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/nft/transfers',
-			params: {
-				owner_address: params.ownerAddress,
-				item_address: params.itemAddress,
-				collection_address: params.collectionAddress,
-				direction: params.direction,
-				start_utime: params.startUtime,
-				end_utime: params.endUtime,
-				start_lt: params.startLt,
-				end_lt: params.endLt,
-				limit: params.limit,
-				offset: params.offset,
-				sort: params.sort,
-			},
-		});
+	}): Promise<{ nft_transfers: V3NftTransfer[], address_book: V3AddressBook }> {
+		return this.request('GET', '/api/v3/nft/transfers', params);
 	}
 
 	// Stats
-	async getTopAccountsByBalance(limit?: number, offset?: number): Promise<TopAccount[]> {
-		return this.request({
-			method: 'GET',
-			url: '/api/v3/topAccountsByBalance',
-			params: {
-				limit,
-				offset,
-			},
-		});
-	}
-
-	private async request<T>(config: AxiosRequestConfig): Promise<T> {
-		try {
-			const response = await this.axiosInstance.request<T>(config);
-			return response.data;
-		} catch (error) {
-			if (axios.isAxiosError(error) && error.response) {
-				throw new Error(`API Error: ${error.response.status} - ${error.response.data.error}`);
-			}
-			throw error;
-		}
+	async getTopAccountsByBalance(limit?: number, offset?: number): Promise<V3TopAccount[]> {
+		return this.request('GET', '/api/v3/topAccountsByBalance', { limit, offset });
 	}
 }
 
-export default ToncenterApiSdk;
+export { TonCenterApiSdkV2, TonCenterApiSdkV3 };

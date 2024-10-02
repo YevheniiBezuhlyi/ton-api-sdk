@@ -1,10 +1,13 @@
-export interface AddressBook {
+//***********************************
+//************ V3 Types *************
+//***********************************
+export interface V3AddressBook {
 	[address: string]: {
 		user_friendly: string;
 	};
 }
 
-export interface AccountState {
+export interface V3AccountState {
 	account_state_hash: string;
 	address: string;
 	balance: string;
@@ -18,7 +21,7 @@ export interface AccountState {
 	status: string;
 }
 
-export interface WalletState {
+export interface V3WalletState {
 	address: string;
 	balance: string;
 	code_hash: string;
@@ -32,7 +35,7 @@ export interface WalletState {
 	wallet_type: string;
 }
 
-export interface Action {
+export interface V3Action {
 	action_id: string;
 	details: string;
 	end_lt: string;
@@ -46,8 +49,8 @@ export interface Action {
 	type: string;
 }
 
-export interface Event {
-	actions: Action[];
+export interface V3Event {
+	actions: V3Action[];
 	end_lt: string;
 	end_utime: number;
 	external_hash: string;
@@ -65,15 +68,15 @@ export interface Event {
 		trace_state: string;
 		transactions: number;
 	};
-	transactions: { [key: string]: Transaction };
+	transactions: { [key: string]: V3Transaction };
 	transactions_order: string[];
 	warning: string;
 }
 
-export interface Transaction {
+export interface V3Transaction {
 	account: string;
-	account_state_after: AccountState;
-	account_state_before: AccountState;
+	account_state_after: V3AccountState;
+	account_state_before: V3AccountState;
 	block_ref: {
 		seqno: number;
 		shard: string;
@@ -82,19 +85,19 @@ export interface Transaction {
 	description: any; // This could be further detailed if needed
 	end_status: string;
 	hash: string;
-	in_msg: Message;
+	in_msg: V3Message;
 	lt: string;
 	mc_block_seqno: number;
 	now: number;
 	orig_status: string;
-	out_msgs: Message[];
+	out_msgs: V3Message[];
 	prev_trans_hash: string;
 	prev_trans_lt: string;
 	total_fees: string;
 	trace_id: string;
 }
 
-export interface Message {
+export interface V3Message {
 	bounce: boolean;
 	bounced: boolean;
 	created_at: string;
@@ -126,7 +129,7 @@ export interface Message {
 	value: string;
 }
 
-export interface Block {
+export interface V3Block {
 	after_merge: boolean;
 	after_split: boolean;
 	before_split: boolean;
@@ -166,7 +169,7 @@ export interface Block {
 	workchain: number;
 }
 
-export interface JettonBurn {
+export interface V3JettonBurn {
 	amount: string;
 	custom_payload: string;
 	jetton_master: string;
@@ -181,7 +184,7 @@ export interface JettonBurn {
 	transaction_now: number;
 }
 
-export interface JettonMaster {
+export interface V3JettonMaster {
 	address: string;
 	admin_address: string;
 	code_hash: string;
@@ -193,7 +196,7 @@ export interface JettonMaster {
 	total_supply: string;
 }
 
-export interface JettonTransfer {
+export interface V3JettonTransfer {
 	amount: string;
 	custom_payload: string;
 	destination: string;
@@ -211,7 +214,7 @@ export interface JettonTransfer {
 	transaction_now: number;
 }
 
-export interface NftCollection {
+export interface V3NftCollection {
 	address: string;
 	code_hash: string;
 	collection_content: { [key: string]: any };
@@ -221,10 +224,10 @@ export interface NftCollection {
 	owner_address: string;
 }
 
-export interface NftItem {
+export interface V3NftItem {
 	address: string;
 	code_hash: string;
-	collection: NftCollection;
+	collection: V3NftCollection;
 	collection_address: string;
 	content: { [key: string]: any };
 	data_hash: string;
@@ -234,7 +237,7 @@ export interface NftItem {
 	owner_address: string;
 }
 
-export interface NftTransfer {
+export interface V3NftTransfer {
 	custom_payload: string;
 	forward_amount: string;
 	forward_payload: string;
@@ -251,7 +254,176 @@ export interface NftTransfer {
 	transaction_now: number;
 }
 
-export interface TopAccount {
+export interface V3TopAccount {
 	account: string;
 	balance: string;
+}
+
+//***********************************
+//************ V2 Types *************
+//***********************************
+
+export interface V2ApiResponse<T> {
+	ok: boolean;
+	result: T;
+}
+
+export interface V2AddressInformation {
+	"@type": string;
+	balance: string;
+	code: string;
+	data: string;
+	last_transaction_id: {
+		"@type": string;
+		lt: string;
+		hash: string;
+	};
+	block_id: {
+		"@type": string;
+		workchain: number;
+		shard: string;
+		seqno: number;
+		root_hash: string;
+		file_hash: string;
+	};
+	frozen_hash: string;
+	sync_utime: number;
+	"@extra": string;
+	state: string;
+}
+
+export interface V2AccountAddress {
+	"@type": "accountAddress";
+	account_address: string;
+}
+
+export interface V2InternalTransactionId {
+	"@type": "internal.transactionId";
+	lt: string;
+	hash: string;
+}
+
+export interface V2TonBlockIdExt {
+	"@type": "ton.blockIdExt";
+	workchain: number;
+	shard: string;
+	seqno: number;
+	root_hash: string;
+	file_hash: string;
+}
+
+export interface V2WalletV4AccountState {
+	"@type": "wallet.v4.accountState";
+	wallet_id: string;
+	seqno: number;
+}
+
+export interface V2ExtendedAddressInformation {
+	"@type": "fullAccountState";
+	address: V2AccountAddress;
+	balance: string;
+	last_transaction_id: V2InternalTransactionId;
+	block_id: V2TonBlockIdExt;
+	sync_utime: number;
+	account_state: V2WalletV4AccountState;
+	revision: number;
+	"@extra": string;
+}
+
+export interface V2WalletInformation {
+	wallet: boolean;
+	balance: string;
+	account_state: string;
+	wallet_type: string;
+	seqno: number;
+	last_transaction_id: V2InternalTransactionId;
+	wallet_id: number;
+}
+
+export interface V2Message {
+	"@type": "raw.message";
+	source: string;
+	destination: string;
+	value: string;
+	fwd_fee: string;
+	ihr_fee: string;
+	created_lt: string;
+	body_hash: string;
+	msg_data: {
+		"@type": "msg.dataText";
+		text: string;
+	};
+	message: string;
+}
+
+export interface V2Transaction {
+	"@type": "raw.transaction";
+	address: V2AccountAddress;
+	utime: number;
+	data: string;
+	transaction_id: V2InternalTransactionId;
+	fee: string;
+	storage_fee: string;
+	other_fee: string;
+	in_msg: V2Message;
+	out_msgs: V2Message[];
+}
+
+export interface V2JettonMasterData {
+	total_supply: number;
+	mintable: boolean;
+	admin_address: string;
+	jetton_content: {
+		type: string;
+		data: {
+			uri: string;
+			decimals: string;
+		};
+	};
+	jetton_wallet_code: string;
+	contract_type: 'jetton_master';
+}
+
+export interface V2JettonWalletData {
+	balance: number;
+	owner: string;
+	jetton: string;
+	jetton_wallet_code: string;
+	contract_type: 'jetton_wallet';
+}
+
+export interface V2NFTItemData {
+	init: boolean;
+	index: number;
+	owner_address: string;
+	content: {
+		type: string;
+		data: string;
+	};
+	contract_type: 'nft_item';
+}
+
+export interface V2NFTCollectionData {
+	next_item_index: number;
+	collection_content: {
+		type: string;
+		data: string;
+	};
+	owner_address: string;
+	contract_type: 'nft_collection';
+}
+
+export type V2TokenData = V2JettonMasterData | V2JettonWalletData | V2NFTItemData | V2NFTCollectionData;
+
+export interface V2AddressFormat {
+	b64: string;
+	b64url: string;
+}
+
+export interface V2DetectedAddress {
+	raw_form: string;
+	bounceable: V2AddressFormat;
+	non_bounceable: V2AddressFormat;
+	given_type: string;
+	test_only: boolean;
 }

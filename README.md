@@ -1,8 +1,20 @@
 # TONCENTER API SDK
 
+## Current Status
+- V3 ✅
+- V2 accounts section ✅
+- V2 blocks section 🚫 
+- V2 transactions section🚫
+- V2 get config section🚫
+- V2 run section ⚠️- responses aren't parsed
+- V2 send section ⚠️ - responses aren't parsed
+- V2 json rpc section ⚠️ - responses aren't parsed
+
 ## Introduction
 
 The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through its API. This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
+
+The SDK includes V2 and V3.
 
 ## Compatible Data Providers
 List of compatible data providers:
