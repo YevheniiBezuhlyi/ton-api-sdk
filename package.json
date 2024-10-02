@@ -10,6 +10,9 @@
   },
   "author": "Yevhenii Bezuhlyi",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/YevheniiBezuhlyi/toncenter-api-sdk"
+  },
   "dependencies": {
     "axios": "^1.7.7"
   },

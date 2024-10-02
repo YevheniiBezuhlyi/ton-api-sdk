@@ -3,7 +3,7 @@ Supports only V3 API version.
 
 ## Usage example
 ```ts
-import TonApiSdk from './ton-api-sdk';
+import ToncenterApiSdk from 'toncenter-api-sdk';
 
 const apiKey = 'your-api-key-here';
 const baseURL = 'https://toncenter.com/';
