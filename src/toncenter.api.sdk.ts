@@ -5,7 +5,7 @@ import {
 	V2ApiResponse, V2ExtendedAddressInformation, V2Transaction, V2WalletInformation,
 	V3AccountState, V3Action, V3AddressBook, V3Block, V3Event, V3JettonBurn,
 	V3JettonMaster, V3JettonTransfer, V3Message, V3NftCollection, V3NftItem,
-	V3NftTransfer, V3TopAccount, V3Transaction, V3WalletState, V2DetectedAddress
+	V3NftTransfer, V3TopAccount, V3Transaction, V3WalletState, V2DetectedAddress, V3JettonWalletsResponse
 } from './types';
 
 class TonCenterApiSdkBase {
@@ -302,6 +302,18 @@ class TonCenterApiSdkV3 extends TonCenterApiSdkBase {
 		sort?: 'asc' | 'desc';
 	}): Promise<{ jetton_transfers: V3JettonTransfer[], address_book: V3AddressBook }> {
 		return this.request('GET', '/api/v3/jetton/transfers', params);
+	}
+
+	async getJettonWallets(params: {
+		address?: string[];
+		owner_address?: string[];
+		jetton_address?: string;
+		exclude_zero_balance?: boolean;
+		limit?: number;
+		offset?: number;
+		sort?: 'asc' | 'desc';
+	}): Promise<V3JettonWalletsResponse> {
+		return this.request<V3JettonWalletsResponse>('GET', '/api/v3/jetton/wallets', params);
 	}
 
 	// NFTs

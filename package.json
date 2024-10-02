@@ -1,6 +1,6 @@
 {
   "name": "toncenter-api-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "TypeScript SDK for the TONCENTER API",
   "main": "dist/toncenter.api.sdk.js",
   "types": "dist/toncenter.api.sdk.d.ts",

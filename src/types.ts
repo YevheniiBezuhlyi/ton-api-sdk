@@ -259,6 +259,28 @@ export interface V3TopAccount {
 	balance: string;
 }
 
+export interface V3JettonWallet {
+	address: string;
+	balance: string;
+	code_hash: string;
+	data_hash: string;
+	jetton: string;
+	last_transaction_lt: string;
+	mintless_info?: {
+		amount: string;
+		custom_payload_api_uri: string[];
+		expire_at: number;
+		start_from: number;
+	};
+	owner: string;
+}
+
+export interface V3JettonWalletsResponse {
+	jetton_wallets: V3JettonWallet[];
+	address_book: V3AddressBook;
+}
+
+
 //***********************************
 //************ V2 Types *************
 //***********************************
