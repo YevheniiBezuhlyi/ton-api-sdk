@@ -26,7 +26,7 @@ class ToncenterApiSdk {
 		this.axiosInstance = axios.create({
 			baseURL,
 			headers: {
-				'Authorization': `Bearer ${apiKey}`,
+				...(apiKey && { 'X-Api-Key': `${apiKey}` }),
 				'Content-Type': 'application/json',
 			},
 		});
