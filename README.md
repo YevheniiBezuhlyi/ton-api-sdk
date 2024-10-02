@@ -14,14 +14,15 @@
 
 ## Introduction
 
-The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through its API. This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
+The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through Toncenter API. 
+This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
 
 The SDK includes V2 and V3.
 
 ## Compatible Data Providers
 List of compatible data providers:
 - [TONCENTER API](https://toncenter.com/)
-- [ChainStack] (https://chainstack.com/)
+- [ChainStack](https://chainstack.com/)
 
 ## Features
 
@@ -179,6 +180,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-For more information about the Toncenter blockchain and its API, please visit the [official TON documentation](https://toncenter.com/).
+For more information about the Toncenter API, please visit the [official TON documentation](https://toncenter.com/).
 
 If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/YevheniiBezuhlyi/toncenter-api-sdk/issues).
