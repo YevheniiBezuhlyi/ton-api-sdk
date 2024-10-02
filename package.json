@@ -1,0 +1,20 @@
+{
+  "name": "toncenter-api-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for the TON API",
+  "main": "dist/toncenter.api.sdk.js",
+  "types": "dist/toncenter.api.sdk.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "author": "Yevhenii Bezuhlyi",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
