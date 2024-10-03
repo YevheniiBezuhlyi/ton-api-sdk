@@ -1,9 +1,12 @@
 {
   "name": "ton-api-sdk-ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "TypeScript SDK for the TON API V2 and V3",
   "main": "dist/ton.api.sdk.js",
   "types": "dist/ton.api.sdk.d.ts",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
