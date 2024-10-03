@@ -19,7 +19,7 @@
 ## Introduction
 
 The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through Toncenter API. 
-super SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
+This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
 
 The SDK includes V2 and V3.
 
@@ -58,10 +58,10 @@ First, import the SDK and create an instance:
 ```typescript
 import ToncenterApiSdk from 'toncenter-api-sdk';
 
-const apiKey = 'your-api-key-here';
+const apiKey = 'your-api-key-here'; // optional
 const baseURL = 'https://toncenter.com'; https://ton-testnet.core.chainstack.com/${api_key}/
 
-const toncenterApi = new ToncenterApiSdk(baseURL, apiKey);
+const toncenterApi = new TonCenterApiSdk(baseURL, apiKey);
 ```
 
 Now you can use the `toncenterApi` instance to make calls to the TONCENTER API:
@@ -69,13 +69,13 @@ Now you can use the `toncenterApi` instance to make calls to the TONCENTER API:
 ```typescript
 async function example() {
   try {
-    const accountStates = await toncenterApi.getAccountStates(['EQA...', 'EQB...']);
+    const accountStates = await toncenterApi.v3.getAccountStates(['EQA...', 'EQB...']);
     console.log('Account States:', accountStates);
 
-    const blocks = await toncenterApi.getBlocks({ limit: 10, sort: 'desc' });
+    const blocks = await toncenterApi.v3.getBlocks({ limit: 10, sort: 'desc' });
     console.log('Recent Blocks:', blocks);
 
-    const transactions = await toncenterApi.getTransactions({ limit: 5, sort: 'desc' });
+    const transactions = await toncenterApi.v3.getTransactions({ limit: 5, sort: 'desc' });
     console.log('Recent Transactions:', transactions);
   } catch (error) {
     console.error('Error:', error.message);
@@ -124,14 +124,14 @@ For detailed information on each method and its parameters, please refer to the 
 ### Fetching Account Information
 
 ```typescript
-const accountInfo = await toncenterApi.getAddressInformation('EQA...');
+const accountInfo = await toncenterApi.v3.getAddressInformation('EQA...');
 console.log('Account Info:', accountInfo);
 ```
 
 ### Getting Recent Transactions
 
 ```typescript
-const transactions = await toncenterApi.getTransactions({
+const transactions = await toncenterApi.v3.getTransactions({
   limit: 10,
   sort: 'desc'
 });
@@ -141,7 +141,7 @@ console.log('Recent Transactions:', transactions);
 ### Fetching NFT Items
 
 ```typescript
-const nftItems = await toncenterApi.getNftItems({
+const nftItems = await toncenterApi.v3.getNftItems({
   collectionAddress: 'EQA...',
   limit: 20
 });
@@ -154,7 +154,7 @@ The SDK uses a custom error handling mechanism. All API calls are wrapped in a t
 
 ```typescript
 try {
-  const result = await toncenterApi.someMethod();
+  const result = await toncenterApi.v3.someMethod();
   // Handle successful result
 } catch (error) {
   console.error('An error occurred:', error.message);
@@ -164,7 +164,7 @@ try {
 
 ## TypeScript Support
 
-super SDK is written in TypeScript and provides type definitions for all methods and responses. super ensures type safety and enables better IDE support with autocompletion and inline documentation.
+This SDK is written in TypeScript and provides type definitions for all methods and responses. This ensures type safety and enables better IDE support with autocompletion and inline documentation.
 
 ## Contributing
 
@@ -180,7 +180,7 @@ Please ensure that your code follows the existing style.
 
 ## License
 
-super project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
