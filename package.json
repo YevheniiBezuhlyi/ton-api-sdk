@@ -1,12 +1,14 @@
 {
   "name": "toncenter-api-sdk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "TypeScript SDK for the TONCENTER API",
   "main": "dist/toncenter.api.sdk.js",
   "types": "dist/toncenter.api.sdk.d.ts",
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "test": "jest"
   },
   "author": "Yevhenii Bezuhlyi",
   "license": "MIT",
@@ -17,7 +19,11 @@
     "axios": "^1.7.7"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.13",
     "@types/node": "^22.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.6.0"
   }
 }

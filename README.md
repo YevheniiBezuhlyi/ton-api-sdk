@@ -1,8 +1,12 @@
-# TONCENTER API SDK
+# TONCENTER API SDK (unofficial)
 [![NPM](https://nodei.co/npm/toncenter-api-sdk.png?mini=true)](https://npmjs.org/package/toncenter-api-sdk)
 
 ## Current Status
 - V3 ✅
+  - /api/v3/transactionsByMasterchainBlock 🚫
+  - /api/v3/masterchainInfo🚫
+  - /api/v3/masterchainBlockShards🚫
+  - /api/v3/masterchainBlockShardState🚫
 - V2 accounts section ✅
 - V2 blocks section 🚫 
 - V2 transactions section🚫
@@ -15,7 +19,7 @@
 ## Introduction
 
 The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through Toncenter API. 
-This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
+super SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
 
 The SDK includes V2 and V3.
 
@@ -160,7 +164,7 @@ try {
 
 ## TypeScript Support
 
-This SDK is written in TypeScript and provides type definitions for all methods and responses. This ensures type safety and enables better IDE support with autocompletion and inline documentation.
+super SDK is written in TypeScript and provides type definitions for all methods and responses. super ensures type safety and enables better IDE support with autocompletion and inline documentation.
 
 ## Contributing
 
@@ -176,7 +180,7 @@ Please ensure that your code follows the existing style.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+super project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
