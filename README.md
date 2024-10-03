@@ -1,5 +1,5 @@
-# TONCENTER API SDK (unofficial)
-[![NPM](https://nodei.co/npm/toncenter-api-sdk.png?mini=true)](https://npmjs.org/package/toncenter-api-sdk)
+# TON API SDK (unofficial)
+[![NPM](https://nodei.co/npm/ton-api-sdk.png?mini=true)](https://npmjs.org/package/ton-api-sdk)
 
 ## Current Status
 - V3 ✅
@@ -18,19 +18,19 @@
 
 ## Introduction
 
-The TONCENTER API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through Toncenter API. 
+The TON API SDK is a TypeScript library that provides a convenient way to interact with the TON (The Open Network) blockchain through Ton API. 
 This SDK simplifies the process of querying blockchain data, sending transactions, and interacting with smart contracts on the TON network.
 
 The SDK includes V2 and V3.
 
 ## Compatible Data Providers
 List of compatible data providers:
-- [TONCENTER API](https://toncenter.com/)
+- [TON API](https://ton.com/)
 - [ChainStack](https://chainstack.com/)
 
 ## Features
 
-- Full coverage of the TONCENTER API endpoints
+- Full coverage of the TON API endpoints
 - Type-safe methods and responses
 - Promise-based asynchronous calls
 - Comprehensive error handling
@@ -39,16 +39,16 @@ List of compatible data providers:
 
 ## Installation
 
-You can install the TONCENTER API SDK using npm:
+You can install the TON API SDK using npm:
 
 ```bash
-npm install toncenter-api-sdk
+npm install ton-api-sdk
 ```
 
 Or using yarn:
 
 ```bash
-yarn add toncenter-api-sdk
+yarn add ton-api-sdk
 ```
 
 ## Usage
@@ -56,26 +56,26 @@ yarn add toncenter-api-sdk
 First, import the SDK and create an instance:
 
 ```typescript
-import ToncenterApiSdk from 'toncenter-api-sdk';
+import TonApiSdk from 'ton-api-sdk';
 
 const apiKey = 'your-api-key-here'; // optional
-const baseURL = 'https://toncenter.com'; https://ton-testnet.core.chainstack.com/${api_key}/
+const baseURL = 'https://ton.com'; https://ton-testnet.core.chainstack.com/${api_key}/
 
-const toncenterApi = new TonCenterApiSdk(baseURL, apiKey);
+const tonApi = new TonCenterApiSdk(baseURL, apiKey);
 ```
 
-Now you can use the `toncenterApi` instance to make calls to the TONCENTER API:
+Now you can use the `tonApi` instance to make calls to the TON API:
 
 ```typescript
 async function example() {
   try {
-    const accountStates = await toncenterApi.v3.getAccountStates(['EQA...', 'EQB...']);
+    const accountStates = await tonApi.v3.getAccountStates(['EQA...', 'EQB...']);
     console.log('Account States:', accountStates);
 
-    const blocks = await toncenterApi.v3.getBlocks({ limit: 10, sort: 'desc' });
+    const blocks = await tonApi.v3.getBlocks({ limit: 10, sort: 'desc' });
     console.log('Recent Blocks:', blocks);
 
-    const transactions = await toncenterApi.v3.getTransactions({ limit: 5, sort: 'desc' });
+    const transactions = await tonApi.v3.getTransactions({ limit: 5, sort: 'desc' });
     console.log('Recent Transactions:', transactions);
   } catch (error) {
     console.error('Error:', error.message);
@@ -87,7 +87,7 @@ example();
 
 ## API Reference
 
-The SDK provides methods corresponding to all endpoints of the TONCENTER API. Here's a brief overview of the main categories:
+The SDK provides methods corresponding to all endpoints of the TON API. Here's a brief overview of the main categories:
 
 ### Accounts V3
 - `getAccountStates(addresses: string[], includeBoc: boolean = true)`
@@ -124,14 +124,14 @@ For detailed information on each method and its parameters, please refer to the 
 ### Fetching Account Information
 
 ```typescript
-const accountInfo = await toncenterApi.v3.getAddressInformation('EQA...');
+const accountInfo = await tonApi.v3.getAddressInformation('EQA...');
 console.log('Account Info:', accountInfo);
 ```
 
 ### Getting Recent Transactions
 
 ```typescript
-const transactions = await toncenterApi.v3.getTransactions({
+const transactions = await tonApi.v3.getTransactions({
   limit: 10,
   sort: 'desc'
 });
@@ -141,7 +141,7 @@ console.log('Recent Transactions:', transactions);
 ### Fetching NFT Items
 
 ```typescript
-const nftItems = await toncenterApi.v3.getNftItems({
+const nftItems = await tonApi.v3.getNftItems({
   collectionAddress: 'EQA...',
   limit: 20
 });
@@ -154,7 +154,7 @@ The SDK uses a custom error handling mechanism. All API calls are wrapped in a t
 
 ```typescript
 try {
-  const result = await toncenterApi.v3.someMethod();
+  const result = await tonApi.v3.someMethod();
   // Handle successful result
 } catch (error) {
   console.error('An error occurred:', error.message);
@@ -168,7 +168,7 @@ This SDK is written in TypeScript and provides type definitions for all methods 
 
 ## Contributing
 
-Contributions to the TONCENTER API SDK are welcome! Please follow these steps to contribute:
+Contributions to the TON API SDK are welcome! Please follow these steps to contribute:
 
 1. Fork the repository
 2. Create a new branch for your feature or bug fix
@@ -184,6 +184,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-For more information about the Toncenter API, please visit the [official TON documentation](https://toncenter.com/).
+For more information about the Ton API, please visit the [official TON documentation](https://ton.com/).
 
-If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/YevheniiBezuhlyi/toncenter-api-sdk/issues).
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/YevheniiBezuhlyi/ton-api-sdk/issues).

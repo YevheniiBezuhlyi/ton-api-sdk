@@ -1,12 +1,14 @@
-import { TonCenterApiSdkV2 } from './v2/v2-api.sdk';
-import { TonCenterApiSdkV3 } from './v3/v3-api.sdk';
+import { TonApiSdkV2 } from './v2/v2-api.sdk';
+import { TonApiSdkV3 } from './v3/v3-api.sdk';
 
-export default class TonCenterApiSdk {
-	public v2: TonCenterApiSdkV2;
-	public v3: TonCenterApiSdkV3;
+export default class TonApiSdk {
+    public v2: TonApiSdkV2;
+    public v3: TonApiSdkV3;
 
-	constructor(baseURL: string, apiKey?: string) {
-		this.v2 = new TonCenterApiSdkV2(baseURL, apiKey);
-		this.v3 = new TonCenterApiSdkV3(baseURL, apiKey);
-	}
+    constructor(baseURL: string, apiKey: string) {
+        this.v2 = new TonApiSdkV2(baseURL, apiKey);
+        this.v3 = new TonApiSdkV3(baseURL, apiKey);
+    }
 }
+
+export { TonApiSdk };
