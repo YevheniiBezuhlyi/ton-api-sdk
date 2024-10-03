@@ -1,6 +1,6 @@
 {
   "name": "ton-api-sdk",
-  "version": "1.0.6",
+  "version": "0.0.1",
   "description": "TypeScript SDK for the TON API V2 and V3",
   "main": "dist/ton.api.sdk.js",
   "types": "dist/ton.api.sdk.d.ts",
