@@ -20,19 +20,19 @@ import {
 import { Base } from '../base';
 
 export class TonApiSdkV3 extends Base {
-    constructor(baseURL: string, apiKey?: string, logRequests?: boolean) {
-        super(baseURL, apiKey, logRequests);
+    constructor(base_url: string, api_key?: string, log_requests?: boolean) {
+        super(base_url, api_key, log_requests);
     }
 
     // Accounts
     async getAccountStates(
         addresses: string[],
-        includeBoc: boolean = true,
+        include_boc: boolean = true,
     ): Promise<{
         accounts: V3AccountState[];
         address_book: V3AddressBook;
     }> {
-        return super.request('GET', '/api/v3/accountStates', { address: addresses, include_boc: includeBoc });
+        return super.request('GET', '/api/v3/accountStates', { address: addresses, include_boc: include_boc });
     }
 
     async getAddressBook(addresses: string[]): Promise<V3AddressBook> {
@@ -45,24 +45,24 @@ export class TonApiSdkV3 extends Base {
 
     // Events
     async getActions(
-        actionIds?: string[],
-        traceIds?: string[],
+        action_ids?: string[],
+        trace_ids?: string[],
     ): Promise<{
         actions: V3Action[];
         address_book: V3AddressBook;
     }> {
-        return super.request('GET', '/api/v3/actions', { action_id: actionIds, trace_id: traceIds });
+        return super.request('GET', '/api/v3/actions', { action_id: action_ids, trace_id: trace_ids });
     }
 
     async getEvents(params: {
         account?: string;
-        txHash?: string[];
-        msgHash?: string[];
-        mcSeqno?: number;
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        tx_hash?: string[];
+        msg_hash?: string[];
+        mc_seqno?: number;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
@@ -75,11 +75,11 @@ export class TonApiSdkV3 extends Base {
         workchain?: number;
         shard?: string;
         seqno?: number;
-        mcSeqno?: number;
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        mc_seqno?: number;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
@@ -115,15 +115,15 @@ export class TonApiSdkV3 extends Base {
         workchain?: number;
         shard?: string;
         seqno?: number;
-        mcSeqno?: number;
+        mc_seqno?: number;
         account?: string[];
-        excludeAccount?: string[];
+        exclude_account?: string[];
         hash?: string;
         lt?: number;
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
@@ -145,12 +145,12 @@ export class TonApiSdkV3 extends Base {
     // Jettons
     async getJettonBurns(params: {
         address?: string[];
-        jettonWallet?: string[];
-        jettonMaster?: string;
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        jetton_wallet?: string[];
+        jetton_master?: string;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
@@ -160,7 +160,7 @@ export class TonApiSdkV3 extends Base {
 
     async getJettonMasters(params: {
         address?: string[];
-        adminAddress?: string[];
+        admin_address?: string[];
         limit?: number;
         offset?: number;
     }): Promise<{ jetton_masters: V3JettonMaster[]; address_book: V3AddressBook }> {
@@ -168,14 +168,14 @@ export class TonApiSdkV3 extends Base {
     }
 
     async getJettonTransfers(params: {
-        ownerAddress?: string[];
-        jettonWallet?: string[];
-        jettonMaster?: string;
+        owner_address?: string[];
+        jetton_wallet?: string[];
+        jetton_master?: string;
         direction?: 'in' | 'out' | '--';
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
@@ -197,8 +197,8 @@ export class TonApiSdkV3 extends Base {
 
     // NFTs
     async getNftCollections(params: {
-        collectionAddress?: string[];
-        ownerAddress?: string[];
+        collection_address?: string[];
+        owner_address?: string[];
         limit?: number;
         offset?: number;
     }): Promise<{ nft_collections: V3NftCollection[]; address_book: V3AddressBook }> {
@@ -207,8 +207,8 @@ export class TonApiSdkV3 extends Base {
 
     async getNftItems(params: {
         address?: string[];
-        ownerAddress?: string[];
-        collectionAddress?: string;
+        owner_address?: string[];
+        collection_address?: string;
         index?: string[];
         limit?: number;
         offset?: number;
@@ -217,14 +217,14 @@ export class TonApiSdkV3 extends Base {
     }
 
     async getNftTransfers(params: {
-        ownerAddress?: string[];
-        itemAddress?: string[];
-        collectionAddress?: string;
+        owner_address?: string[];
+        item_address?: string[];
+        collection_address?: string;
         direction?: 'in' | 'out' | '--';
-        startUtime?: number;
-        endUtime?: number;
-        startLt?: number;
-        endLt?: number;
+        start_utime?: number;
+        end_utime?: number;
+        start_lt?: number;
+        end_lt?: number;
         limit?: number;
         offset?: number;
         sort?: 'asc' | 'desc';
