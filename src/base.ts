@@ -1,11 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export class Base {
     protected axiosInstance: AxiosInstance;
-    private readonly logRequests: boolean;
+    private logRequests: boolean;
 
-    constructor(baseURL: string, apiKey?: string, logRequests?: boolean) {
-        this.logRequests = logRequests ? logRequests : false;
+    constructor(baseURL: string, apiKey?: string, logRequests: boolean = false) {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
         };
@@ -16,21 +15,34 @@ export class Base {
             baseURL,
             headers,
         });
+        this.logRequests = logRequests;
     }
 
     protected async request<T>(method: string, url: string, params?: any): Promise<T> {
         try {
-            if (this.logRequests) {
-                console.log(`API Request
-                Method: ${method}
-                URL: ${url}
-                Params: ${JSON.stringify(params)}`);
-            }
-            const response = await this.axiosInstance.request<T>({
+            const config: AxiosRequestConfig = {
                 method,
                 url,
-                params,
-            });
+            };
+
+            if (params) {
+                if (method === 'GET' || method === 'DELETE') {
+                    config.params = this.flattenParams(params);
+                } else {
+                    config.data = params;
+                }
+            }
+
+            if (this.logRequests) {
+                console.log(`Request: ${method} ${url}`, config);
+            }
+
+            const response = await this.axiosInstance.request<T>(config);
+
+            if (this.logRequests) {
+                console.log(`Response: ${method} ${url}`, response.data);
+            }
+
             return response.data;
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
@@ -38,5 +50,19 @@ export class Base {
             }
             throw error;
         }
+    }
+
+    private flattenParams(params: any): any {
+        const result: any = {};
+        for (const [key, value] of Object.entries(params)) {
+            if (Array.isArray(value)) {
+                value.forEach((item, index) => {
+                    result[`${key}`] = item;
+                });
+            } else {
+                result[key] = value;
+            }
+        }
+        return result;
     }
 }
