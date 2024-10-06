@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers/promises';
 import { TonApiSdk } from '../src';
 
-const sdk = new TonApiSdk('https://toncenter.com/');
+const sdk = new TonApiSdk('https://toncenter.com/',"68eb50c09db1625145c52ca2a3b2f09e78cbf3c25f0f72ec5ce0929c104b1469");
 
 // Simple rate limiter
 const rateLimiter = {

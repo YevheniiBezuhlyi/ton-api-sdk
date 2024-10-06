@@ -11,8 +11,8 @@ import {
 import { Base } from '../base';
 
 export class TonApiSdkV2 extends Base {
-    constructor(baseURL: string, apiKey?: string) {
-        super(baseURL, apiKey);
+    constructor(baseURL: string, apiKey?: string, logRequests?: boolean) {
+        super(baseURL, apiKey, logRequests);
     }
 
     async getAddressInformation(address: string): Promise<V2ApiResponse<V2AddressInformation>> {

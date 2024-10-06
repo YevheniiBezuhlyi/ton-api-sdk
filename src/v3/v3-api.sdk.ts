@@ -20,8 +20,8 @@ import {
 import { Base } from '../base';
 
 export class TonApiSdkV3 extends Base {
-    constructor(baseURL: string, apiKey?: string) {
-        super(baseURL, apiKey);
+    constructor(baseURL: string, apiKey?: string, logRequests?: boolean) {
+        super(baseURL, apiKey, logRequests);
     }
 
     // Accounts
