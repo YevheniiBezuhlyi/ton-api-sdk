@@ -1,5 +1,5 @@
 # TON API SDK TypeScript (unofficial)
-[![NPM](https://nodei.co/npm/ton-api-sdk.png?mini=true)](https://npmjs.org/package/ton-api-sdk)
+[![NPM](https://nodei.co/npm/ton-api-ts.png?mini=true)](https://npmjs.org/package/ton-api-ts)
 
 ## Current Status
 - V3 ✅
